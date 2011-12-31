@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/footviewbg"
+    android:orientation="horizontal" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="55dip"
+        android:orientation="horizontal" >
+
+        <ImageButton
+            android:id="@+id/share_imagechoose"
+            android:layout_width="55dip"
+            android:layout_height="40dip"
+            android:background="@drawable/imagechoosebutton_bg" 
+            android:gravity="center_vertical"
+            android:layout_gravity="center_vertical">
+        </ImageButton>
+
+        <ImageView
+            android:id="@+id/share_image"
+            android:layout_width="55dip"
+            android:layout_height="55dip"
+            android:layout_gravity="center"
+            android:padding="20dip"
+            android:gravity="center" >
+        </ImageView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/share_word_counter"
+            android:layout_width="35dip"
+            android:layout_height="fill_parent"
+            android:gravity="center_vertical|right"
+            android:paddingRight="5dip"
+            android:text="140"
+            android:textColor="#000000"
+            android:textSize="14.0sp" >
+        </TextView>
+    </LinearLayout>
+
+</RelativeLayout>
