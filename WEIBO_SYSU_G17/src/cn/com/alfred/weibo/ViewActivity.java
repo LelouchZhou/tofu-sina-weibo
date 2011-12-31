@@ -36,6 +36,7 @@ import cn.com.alfred.weibo.http.AccessToken;
 import cn.com.alfred.weibo.util.ImageRel;
 import cn.com.alfred.weibo.util.MyView;
 import cn.com.alfred.weibo.widget.AsyncImageView;
+import cn.com.alfred.weibo.widget.HighLightTextView;
 
 /**
  * 显示单条微博
@@ -48,13 +49,14 @@ public class ViewActivity extends Activity {
 	static class ViewHolder {
 
 		AsyncImageView asyncImageView;
-		TextView tv;
+		TextView tv_name;
+		HighLightTextView tv_text;
 	}
 
 	private AsyncImageView weibo_avatar;
 	private AsyncImageView weibo_pic;
 	private TextView weibo_screenName;
-	private TextView weibo_text;
+	private HighLightTextView weibo_text;
 	private Button weibo_btn_retweet;
 	private Button weibo_btn_comment;
 
@@ -115,7 +117,7 @@ public class ViewActivity extends Activity {
 		weibo_pic = (AsyncImageView) findViewById(R.id.weibo_pic);
 		weibo_pic.setProgressBitmaps(ImageRel.getBitmaps_loading(this));
 		weibo_screenName = (TextView) findViewById(R.id.weibo_screenName);
-		weibo_text = (TextView) findViewById(R.id.weibo_text);
+		weibo_text = (HighLightTextView) findViewById(R.id.weibo_text);
 		weibo_btn_comment = (Button) findViewById(R.id.weibo_btn_comment);
 		weibo_btn_retweet = (Button) findViewById(R.id.weibo_btn_retweet);
 		slidingDrawer = (SlidingDrawer) findViewById(R.id.slidingdrawer);
@@ -129,6 +131,8 @@ public class ViewActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view,
 					int position, long id) {
+				new CommentMentionDialog(ViewActivity.this, true, weiboID,
+						comments.get(position).getId() + "");
 			}
 		});
 
@@ -232,31 +236,47 @@ public class ViewActivity extends Activity {
 			if (convertView == null) {
 				LinearLayout view = new LinearLayout(ViewActivity.this);
 				view.setOrientation(LinearLayout.HORIZONTAL);
+
 				AsyncImageView asyncImageView = new AsyncImageView(
 						ViewActivity.this);
-				TextView tv = new TextView(ViewActivity.this);
+				HighLightTextView tv_text = new HighLightTextView(
+						ViewActivity.this);
 				view.addView(asyncImageView);
-				view.addView(tv);
+				
+				LinearLayout ll = new LinearLayout(ViewActivity.this);
+				ll.setOrientation(LinearLayout.VERTICAL);
 
+				TextView tv_name = new TextView(ViewActivity.this);
+				ll.addView(tv_name);
+				ll.addView(tv_text);
+
+				view.addView(ll);
+				
 				convertView = view;
 				holder = new ViewHolder();
 				holder.asyncImageView = asyncImageView;
-				holder.tv = tv;
+				holder.tv_text = tv_text;
+				holder.tv_name = tv_name;
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
 
+		
 			holder.asyncImageView.setUrl(comments.get(position).getUser()
 					.getProfileImageURL().toExternalForm());
 			holder.asyncImageView.setProgressBitmaps(ImageRel
 					.getBitmaps_avatar(ViewActivity.this));
 			holder.asyncImageView.setPadding(10, 10, 10, 10);
-			holder.tv.setPadding(10, 10, 10, 10);
-			// tv.setTextColor(0x00000000);
-			holder.tv.setGravity(Gravity.CENTER_VERTICAL);
-			holder.tv.setText(comments.get(position).getText());
-			holder.tv.setTextColor(Color.BLACK);
+			
+			holder.tv_name.setTextColor(Color.BLUE);
+			holder.tv_name.setText(comments.get(position).getUser().getScreenName());
+			holder.tv_name.setPadding(5, 10, 0, 0);
+			
+			holder.tv_text.setPadding(10, 10, 10, 10);
+			holder.tv_text.setGravity(Gravity.CENTER_VERTICAL);
+			holder.tv_text.setText(comments.get(position).getText());
+			holder.tv_text.setTextColor(Color.BLACK);
 			return convertView;
 		}
 	}

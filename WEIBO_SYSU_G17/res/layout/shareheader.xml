@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="55dip"
     android:gravity="center_vertical"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:paddingBottom="12dip">
 
     <View
         android:layout_width="fill_parent"
-        android:layout_height="0.6dip"
+        android:layout_height="1dip"
         android:background="#ff666666" />
-
     <RelativeLayout
         android:id="@+id/AppAwareHeader"
         android:layout_width="fill_parent"
@@ -19,20 +19,18 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/Button01"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/btn_share"
+            android:layout_width="55dip"
+            android:layout_height="40dip"
             android:layout_alignParentRight="true"
             android:background="@drawable/titlebutton_bg"
             android:text="分享" >
         </Button>
     </RelativeLayout>
-
     <View
         android:id="@+id/ViewBorderMain"
         android:layout_width="fill_parent"
-        android:layout_height="1.0sp"
+        android:layout_height="1.0dip"
         android:layout_weight="0.0"
         android:background="#ff456028" />
-
 </LinearLayout>
