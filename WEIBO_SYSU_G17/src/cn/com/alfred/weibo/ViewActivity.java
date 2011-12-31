@@ -1,0 +1,263 @@
+package cn.com.alfred.weibo;
+
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
+import java.util.List;
+
+import org.apache.commons.codec.binary.Base64;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.Gravity;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.SlidingDrawer;
+import android.widget.SlidingDrawer.OnDrawerCloseListener;
+import android.widget.TextView;
+import android.widget.Toast;
+import cn.com.alfred.weibo.OAuth.OAuthConstant;
+import cn.com.alfred.weibo.basicModel.Comment;
+import cn.com.alfred.weibo.basicModel.Status;
+import cn.com.alfred.weibo.basicModel.Weibo;
+import cn.com.alfred.weibo.basicModel.WeiboException;
+import cn.com.alfred.weibo.http.AccessToken;
+import cn.com.alfred.weibo.util.ImageRel;
+import cn.com.alfred.weibo.util.MyView;
+import cn.com.alfred.weibo.widget.AsyncImageView;
+
+/**
+ * 显示单条微博
+ * 
+ * @author alfredtofu
+ * 
+ */
+public class ViewActivity extends Activity {
+
+	static class ViewHolder {
+
+		AsyncImageView asyncImageView;
+		TextView tv;
+	}
+
+	private AsyncImageView weibo_avatar;
+	private AsyncImageView weibo_pic;
+	private TextView weibo_screenName;
+	private TextView weibo_text;
+	private Button weibo_btn_retweet;
+	private Button weibo_btn_comment;
+
+	private SlidingDrawer slidingDrawer;
+
+	private Status status;
+
+	private String url;
+
+	private long weiboID;
+
+	private List<Comment> comments;
+	private CommentAdapter adapter;
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.weibo);
+
+		System.setProperty("weibo4j.oauth.consumerKey", Weibo.CONSUMER_KEY);
+		System.setProperty("weibo4j.oauth.consumerSecret",
+				Weibo.CONSUMER_SECRET);
+
+		Bundle bundle = getIntent().getExtras();
+		if (bundle == null || !bundle.containsKey("cid")) {
+			Toast.makeText(this, "获取微博信息失败", Toast.LENGTH_LONG).show();
+			finish();
+			return;
+		}
+		weiboID = bundle.getLong("cid");
+
+		try {
+			Weibo weibo = OAuthConstant.getInstance().getWeibo();
+			if (weibo == null) {
+				SharedPreferences sp = getSharedPreferences("tofuweibo",
+						Context.MODE_PRIVATE);
+				String s = sp.getString("accessToken", null);
+				if (s != null) {
+					byte[] bytes = Base64.decodeBase64(s.getBytes());
+					ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+					ObjectInputStream ois = new ObjectInputStream(bais);
+					AccessToken accessToken = (AccessToken) ois.readObject();
+					if (accessToken != null)
+						OAuthConstant.getInstance().setAccessToken(accessToken);
+				}
+			}
+			status = weibo.showStatus(weiboID);
+			comments = weibo.getComments(weiboID + "");
+		} catch (Exception e) {
+			e.printStackTrace();
+			Toast.makeText(this, "获取微博信息失败", Toast.LENGTH_LONG).show();
+			finish();
+			return;
+		}
+
+		weibo_avatar = (AsyncImageView) findViewById(R.id.weibo_avatar);
+		weibo_avatar.setProgressBitmaps(ImageRel.getBitmaps_avatar(this));
+		weibo_pic = (AsyncImageView) findViewById(R.id.weibo_pic);
+		weibo_pic.setProgressBitmaps(ImageRel.getBitmaps_loading(this));
+		weibo_screenName = (TextView) findViewById(R.id.weibo_screenName);
+		weibo_text = (TextView) findViewById(R.id.weibo_text);
+		weibo_btn_comment = (Button) findViewById(R.id.weibo_btn_comment);
+		weibo_btn_retweet = (Button) findViewById(R.id.weibo_btn_retweet);
+		slidingDrawer = (SlidingDrawer) findViewById(R.id.slidingdrawer);
+
+		ListView listView = (ListView) findViewById(R.id.slide_listView);
+		listView.setCacheColorHint(0);
+		adapter = new CommentAdapter();
+		listView.setAdapter(adapter);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+			}
+		});
+
+		try {
+			weibo_avatar.setUrl(status.getUser().getProfileImageURL()
+					.toString());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Toast.makeText(this, "获取微博信息失败", Toast.LENGTH_LONG).show();
+			finish();
+		}
+		weibo_screenName.setText(status.getUser().getScreenName());
+
+		String text = status.getText();
+
+		if (status.getRetweeted_status() != null) {
+			text = text + "\n\n转自: @"
+					+ status.getRetweeted_status().getUser().getScreenName()
+					+ " : " + status.getRetweeted_status().getText();
+			if (!TextUtils.isEmpty(status.getRetweeted_status()
+					.getThumbnail_pic())) {
+				weibo_pic.setVisibility(View.VISIBLE);
+				weibo_pic.setUrl(status.getRetweeted_status()
+						.getThumbnail_pic());
+				weibo_pic.setVisibility(View.VISIBLE);
+				url = status.getRetweeted_status().getOriginal_pic();
+			}
+		} else if (!TextUtils.isEmpty(status.getThumbnail_pic())) {
+			weibo_pic.setUrl(status.getThumbnail_pic());
+			weibo_pic.setVisibility(View.VISIBLE);
+			url = status.getOriginal_pic();
+		}
+
+		weibo_pic.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(ViewActivity.this, MyView.class);
+				intent.putExtra("url", url);
+				startActivity(intent);
+			}
+		});
+
+		weibo_text.setText(text);
+
+		weibo_btn_comment.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				new CommentMentionDialog(ViewActivity.this, true, weiboID, null);
+			}
+		});
+
+		weibo_btn_retweet.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				new CommentMentionDialog(ViewActivity.this, false, weiboID,
+						null);
+			}
+		});
+
+		slidingDrawer.setOnDrawerCloseListener(new OnDrawerCloseListener() {
+
+			@Override
+			public void onDrawerClosed() {
+				Weibo weibo = OAuthConstant.getInstance().getWeibo();
+				try {
+					List<Comment> newComments = weibo.getComments(weiboID + "");
+					comments = newComments;
+					adapter.notifyDataSetChanged();
+				} catch (WeiboException e) {
+					e.printStackTrace();
+					Toast.makeText(ViewActivity.this, "获取微博信息失败",
+							Toast.LENGTH_LONG).show();
+				}
+			}
+		});
+	}
+
+	class CommentAdapter extends BaseAdapter {
+
+		@Override
+		public int getCount() {
+			return comments.size();
+		}
+
+		@Override
+		public Comment getItem(int position) {
+			return comments.get(position);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			ViewHolder holder;
+			if (convertView == null) {
+				LinearLayout view = new LinearLayout(ViewActivity.this);
+				view.setOrientation(LinearLayout.HORIZONTAL);
+				AsyncImageView asyncImageView = new AsyncImageView(
+						ViewActivity.this);
+				TextView tv = new TextView(ViewActivity.this);
+				view.addView(asyncImageView);
+				view.addView(tv);
+
+				convertView = view;
+				holder = new ViewHolder();
+				holder.asyncImageView = asyncImageView;
+				holder.tv = tv;
+				convertView.setTag(holder);
+			} else {
+				holder = (ViewHolder) convertView.getTag();
+			}
+
+			holder.asyncImageView.setUrl(comments.get(position).getUser()
+					.getProfileImageURL().toExternalForm());
+			holder.asyncImageView.setProgressBitmaps(ImageRel
+					.getBitmaps_avatar(ViewActivity.this));
+			holder.asyncImageView.setPadding(10, 10, 10, 10);
+			holder.tv.setPadding(10, 10, 10, 10);
+			// tv.setTextColor(0x00000000);
+			holder.tv.setGravity(Gravity.CENTER_VERTICAL);
+			holder.tv.setText(comments.get(position).getText());
+			holder.tv.setTextColor(Color.BLACK);
+			return convertView;
+		}
+	}
+}

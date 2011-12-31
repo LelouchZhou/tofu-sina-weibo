@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:orientation="vertical" android:textColor="#ddeeeeee">
+
+	<TextView android:id="@+id/userinfo_failed"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:visibility="gone" android:textColor="#424952" />
+
+	<LinearLayout android:id="@+id/userinfo_ll"
+		android:layout_width="fill_parent" android:layout_height="wrap_content"
+		android:orientation="vertical" android:visibility="gone">
+
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:orientation="horizontal"
+			android:paddingLeft="10dip" android:paddingTop="10dip">
+
+			<cn.com.alfred.weibo.widget.AsyncImageView
+				android:id="@+id/userinfo_pic" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+
+			<TextView android:id="@+id/userinfo_tv_name"
+				android:layout_width="wrap_content" android:layout_height="wrap_content"
+				android:paddingLeft="10dip" android:text="昵称" />
+		</LinearLayout>
+
+		<TextView android:id="@+id/userinfo_tv_location"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:paddingLeft="10dip" android:paddingTop="10dip" android:text="地址"
+			android:textColor="#424952" />
+
+		<TextView android:id="@+id/userinfo_tv_url"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:paddingLeft="10dip" android:paddingTop="10dip" android:text="博客"
+			android:textColor="#424952" />
+
+		<TextView android:id="@+id/userinfo_tv_description"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:paddingLeft="10dip" android:paddingTop="10dip" android:text="介绍"
+			android:textColor="#424952" />
+
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:orientation="horizontal"
+			android:paddingLeft="10dip" android:paddingTop="10dip">
+
+			<Button android:id="@+id/userinfo_btn_friends"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:layout_weight="1" android:text="关注" />
+
+			<Button android:id="@+id/userinfo_btn_weibo"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:layout_weight="1" android:text="微博" />
+		</LinearLayout>
+
+		<LinearLayout android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:orientation="horizontal"
+			android:paddingLeft="10dip" android:paddingTop="10dip">
+
+			<Button android:id="@+id/userinfo_btn_follows"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:layout_weight="1" android:text="粉丝" />
+
+			<Button android:id="@+id/userinfo_btn_refresh"
+				android:layout_width="fill_parent" android:layout_height="wrap_content"
+				android:layout_weight="1" android:text="刷新" />
+		</LinearLayout>
+	</LinearLayout>
+
+	<LinearLayout android:id="@+id/userinfo_waitingView"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:orientation="horizontal" android:gravity="center">
+
+		<ProgressBar style="?android:attr/progressBarStyleSmallTitle"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:indeterminateDrawable="@drawable/progresscolor" />
+
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:paddingLeft="10dip"
+			android:text="加载中..." />
+	</LinearLayout>
+
+</FrameLayout>
