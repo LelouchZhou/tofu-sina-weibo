@@ -37,7 +37,6 @@ import java.util.TimeZone;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import android.util.Log;
 import cn.com.alfred.weibo.http.AccessToken;
 import cn.com.alfred.weibo.http.HttpClient;
 import cn.com.alfred.weibo.http.ImageItem;
@@ -46,7 +45,6 @@ import cn.com.alfred.weibo.http.RequestToken;
 import cn.com.alfred.weibo.http.Response;
 import cn.com.alfred.weibo.json.JSONException;
 import cn.com.alfred.weibo.json.JSONObject;
-import cn.com.alfred.weibo.util.InfoHelper;
 import cn.com.alfred.weibo.util.URLEncodeUtils;
 
 /**

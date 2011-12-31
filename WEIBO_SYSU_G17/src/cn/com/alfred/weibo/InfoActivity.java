@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -53,6 +54,7 @@ public class InfoActivity extends TabActivity implements TabContentFactory,
 	private List<WeiboResponse> mentions = new ArrayList<WeiboResponse>();
 	private boolean[] isCompleted = new boolean[3];
 	private boolean[] isRunning = new boolean[3];
+	private boolean isFirst;
 	private WaitingView waitingView;
 	private Runnable[] runnables = new Runnable[3];
 	private static String[] texts = new String[] { "“我收到的评论”", "“我发出的评论”",
@@ -71,17 +73,28 @@ public class InfoActivity extends TabActivity implements TabContentFactory,
 					break;
 				case InfoHelper.LOADING_DATA_COMPLETED:
 					isCompleted[msg.arg1] = true;
+					infoAdapter.notifyDataSetChanged();
+					Log.d("tabHost.getCurrentTab(): " + tabHost.getCurrentTab(),
+							"msg.arg1: " + msg.arg1);
 					if (tabHost.getCurrentTab() == msg.arg1) {
+						Log.d("setVisibility", "setVisibility");
 						waitingView.setVisibility(View.GONE);
 						autoGetMoreListView.setVisibility(View.VISIBLE);
 						// autoGetMoreListView.setSelection(1);
+
+						// 不知道为什么第一次启动这个TabActivity的时候，infoAdapter.notifyDataSetChanged()没作用，通过这种方式可以解决，但是并不好
+						if (isFirst) {
+							isFirst = false;
+							tabHost.setCurrentTab((msg.arg1 + 1) % 3);
+							tabHost.setCurrentTab(msg.arg1);
+						}
 					}
 					Toast.makeText(InfoActivity.this,
 							"刷新" + texts[msg.arg1] + "完成", Toast.LENGTH_LONG)
 							.show();
 					break;
 			}
-			infoAdapter.notifyDataSetChanged();
+
 		}
 	};
 
@@ -89,6 +102,8 @@ public class InfoActivity extends TabActivity implements TabContentFactory,
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tabactivity);
+
+		isFirst = true;
 
 		Arrays.fill(isCompleted, false);
 		Arrays.fill(isRunning, false);
@@ -138,6 +153,7 @@ public class InfoActivity extends TabActivity implements TabContentFactory,
 				break;
 		}
 		infoAdapter.setType(type);
+		infoAdapter.notifyDataSetChanged();
 		changeTabStyle();
 	}
 
