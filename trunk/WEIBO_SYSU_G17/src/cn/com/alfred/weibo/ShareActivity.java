@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.ObjectInputStream;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -28,11 +30,19 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -41,6 +51,7 @@ import cn.com.alfred.weibo.OAuth.OAuthConstant;
 import cn.com.alfred.weibo.basicModel.Weibo;
 import cn.com.alfred.weibo.http.AccessToken;
 import cn.com.alfred.weibo.util.InfoHelper;
+import cn.com.alfred.weibo.widget.HighLightTextView;
 
 /**
  * 发表微博
@@ -55,13 +66,21 @@ public class ShareActivity extends Activity {
 	private static final int UPDATE_SUCCESS = 0;
 	private static final int UPDATE_FAILED = 1;
 
-	private Button button = null;
-	private ImageButton imgChooseBtn = null;
-	private ImageView imageView = null;
-	private TextView wordCounterTextView = null;
-	private EditText contentEditText = null;
-	private ProgressDialog dialog = null;
+	private Button btn_share;
+	private Button btn_emtions;
+	private ImageButton imgChooseBtn;
+	private ImageView imageView;
+	private TextView wordCounterTextView;
+	private EditText contentEditText;
+	private ProgressDialog dialog;
+	private GridView gridView;
+	private GridAdapter adapter;
 	private String uploadImage = null;
+	private List<Bitmap> emotioms = new ArrayList<Bitmap>();
+	private List<String> emotioms_name = new ArrayList<String>();
+	private boolean isInputMethodShow;
+	private boolean isGridViewShow;
+	private String lastString;
 
 	private Handler handler = new Handler() {
 
@@ -137,7 +156,13 @@ public class ShareActivity extends Activity {
 		System.setProperty("weibo4j.oauth.consumerSecret",
 				Weibo.CONSUMER_SECRET);
 
-		button = (Button) findViewById(R.id.Button01);
+		isInputMethodShow = isGridViewShow = false;
+		lastString = "";
+		getEmotions();
+
+		gridView = (GridView) findViewById(R.id.gridView);
+		btn_share = (Button) findViewById(R.id.btn_share);
+		btn_emtions = (Button) findViewById(R.id.btn_add_emotion);
 		imgChooseBtn = (ImageButton) findViewById(R.id.share_imagechoose);
 		imageView = (ImageView) findViewById(R.id.share_image);
 		wordCounterTextView = (TextView) findViewById(R.id.share_word_counter);
@@ -163,7 +188,25 @@ public class ShareActivity extends Activity {
 			}
 		}
 
-		button.setOnClickListener(new OnClickListener() {
+		adapter = new GridAdapter();
+		gridView.setAdapter(adapter);
+		gridView.setVisibility(View.GONE);
+		adapter.notifyDataSetChanged();
+		gridView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				String text = contentEditText.getText().toString();
+				if (TextUtils.isEmpty(text))
+					text = "";
+
+				text = text + emotioms_name.get(position);
+				contentEditText.setText(text);
+			}
+		});
+
+		btn_share.setOnClickListener(new OnClickListener() {
 
 			@Override
 			public void onClick(View v) {
@@ -171,6 +214,35 @@ public class ShareActivity extends Activity {
 				if (InfoHelper.checkNetWork(ShareActivity.this) && isChecked()) {
 					dialog.show();
 					new Thread(updateWeibo).start();
+				}
+			}
+		});
+
+		btn_emtions.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if (btn_emtions.getText().equals("输入文字")) {
+					btn_emtions.setText("添加表情");
+
+					InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+					inputMethodManager.toggleSoftInput(0,
+							InputMethodManager.SHOW_FORCED);
+					gridView.setVisibility(View.GONE);
+
+					isInputMethodShow = true;
+					isGridViewShow = false;
+
+				} else {
+					btn_emtions.setText("输入文字");
+
+					InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+					inputMethodManager.hideSoftInputFromWindow(
+							contentEditText.getApplicationWindowToken(), 0);
+					gridView.setVisibility(View.VISIBLE);
+
+					isInputMethodShow = false;
+					isGridViewShow = true;
 				}
 			}
 		});
@@ -186,19 +258,38 @@ public class ShareActivity extends Activity {
 
 		contentEditText.addTextChangedListener(new TextWatcher() {
 
+			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
 					int count) {
-				textCountSet();
-			}
-
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
+				if (lastString.equals(s.toString()))
+					return;
+				Log.d("onTextChanged", "s: " + s.toString());
+				Log.d("onTextChanged", "lastString: " + lastString);
+				lastString = new String(s.toString());
 				textCountSet();
 			}
 
 			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			@Override
 			public void afterTextChanged(Editable s) {
-				textCountSet();
+			}
+
+		});
+
+		contentEditText.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+				inputMethodManager.toggleSoftInput(0,
+						InputMethodManager.SHOW_FORCED);
+				btn_emtions.setText("添加表情");
+				isInputMethodShow = true;
+				isGridViewShow = false;
 			}
 		});
 
@@ -229,6 +320,59 @@ public class ShareActivity extends Activity {
 		dialog.setMessage("分享中...");
 		dialog.setIndeterminate(false);
 		dialog.setCancelable(true);
+	}
+
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (keyCode == KeyEvent.KEYCODE_BACK) {
+			InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+			inputMethodManager.hideSoftInputFromWindow(
+					contentEditText.getApplicationWindowToken(), 0);
+			gridView.setVisibility(View.GONE);
+			if (isInputMethodShow || isGridViewShow) {
+				isInputMethodShow = isGridViewShow = false;
+				return true;
+			}
+			new AlertDialog.Builder(ShareActivity.this)
+					.setMessage("确认要退出发微博吗？")
+					.setPositiveButton("确定",
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+									ShareActivity.this.finish();
+								}
+							})
+					.setNegativeButton("取消",
+							new DialogInterface.OnClickListener() {
+
+								@Override
+								public void onClick(DialogInterface dialog,
+										int which) {
+								}
+							}).show();
+			isInputMethodShow = isGridViewShow = false;
+			return true;
+		}
+		return false;
+	}
+
+	private void getEmotions() {
+		emotioms.clear();
+		emotioms_name.clear();
+		File file = new File(InfoHelper.getEmotionPath());
+		File[] files = file.listFiles();
+		Log.d(InfoHelper.TAG, "files size " + files.length);
+		try {
+			for (File tmp : files) {
+				emotioms.add(BitmapFactory.decodeFile(tmp.getAbsolutePath()));
+				emotioms_name.add(tmp.getName());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -403,13 +547,52 @@ public class ShareActivity extends Activity {
 	 */
 	private void textCountSet() {
 		String textContent = contentEditText.getText().toString();
+		if (TextUtils.isEmpty(textContent))
+			textContent = "";
 		int remainLength = 140 - textContent.length();
 		if (remainLength <= 140) {
 			wordCounterTextView.setTextColor(Color.BLACK);
 		} else {
 			wordCounterTextView.setTextColor(Color.RED);
 		}
+		HighLightTextView.setHighLightText(contentEditText, textContent);
 		wordCounterTextView.setText(String.valueOf(remainLength));
+		contentEditText.setSelection(contentEditText.length());
 	}
 
+	class GridAdapter extends BaseAdapter {
+
+		@Override
+		public int getCount() {
+			return emotioms.size();
+		}
+
+		@Override
+		public Bitmap getItem(int position) {
+			return emotioms.get(position);
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return position;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			ImageView imageView;
+			if (convertView == null) {
+				imageView = new ImageView(ShareActivity.this);
+				imageView.setLayoutParams(new GridView.LayoutParams(45, 45));
+				imageView.setAdjustViewBounds(false);
+				imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+				imageView.setPadding(8, 8, 8, 8);
+			} else {
+				imageView = (ImageView) convertView;
+			}
+
+			imageView.setImageBitmap(emotioms.get(position));
+			return imageView;
+		}
+
+	}
 }

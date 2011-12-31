@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent" android:layout_height="wrap_content"
-	android:background="#FFFFFF" android:gravity="top">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<RelativeLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:background="#FFFFFF"
+		android:gravity="top" android:layout_weight="1">
 
-	<LinearLayout android:id="@+id/share_image_view"
-		android:orientation="vertical" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:gravity="left"
-		android:layout_alignParentBottom="true">
-		<include layout="@layout/sharefootview" />
-	</LinearLayout>
-	<EditText android:id="@+id/share_content"
-		android:layout_width="fill_parent" android:layout_height="fill_parent"
-		android:hint="说点什么吧..." android:scrollbars="vertical" android:gravity="top"
-		android:layout_above="@id/share_image_view" />
-</RelativeLayout>
+		<LinearLayout android:id="@+id/share_image_view"
+			android:orientation="vertical" android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:gravity="left"
+			android:layout_alignParentBottom="true">
+			<include layout="@layout/sharefootview" />
+		</LinearLayout>
+		<EditText android:id="@+id/share_content"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:hint="说点什么吧..." android:scrollbars="vertical"
+			android:gravity="top" android:layout_above="@id/share_image_view" />
+	</RelativeLayout>
+	<GridView android:id="@+id/gridView" android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:layout_weight="1"
+		android:padding="10dp" android:verticalSpacing="10dp"
+		android:horizontalSpacing="10dp" android:numColumns="auto_fit"
+		android:columnWidth="60dp" android:stretchMode="columnWidth"
+		android:gravity="center">
+	</GridView>
+</LinearLayout>

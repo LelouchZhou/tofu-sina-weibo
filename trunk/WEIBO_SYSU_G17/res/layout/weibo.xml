@@ -33,7 +33,7 @@
                     android:textColor="#000000" />
             </LinearLayout>
 
-            <TextView
+            <cn.com.alfred.weibo.widget.HighLightTextView
                 android:id="@+id/weibo_text"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
