@@ -150,7 +150,7 @@ public class FriendsOrFollowsList extends Activity implements
 
 		Weibo weibo = OAuthConstant.getInstance().getWeibo();
 		// boolean followed, following;
-		for (int index = beg; beg < list.size(); beg++) {
+		for (int index = beg; index < list.size(); index++) {
 			User user = list.get(index);
 			// String text = "";
 			try {
@@ -213,7 +213,7 @@ public class FriendsOrFollowsList extends Activity implements
 
 				LinearLayout ll1 = new LinearLayout(FriendsOrFollowsList.this);
 				ll1.setOrientation(LinearLayout.VERTICAL);
-
+				ll1.setLayoutParams(new LayoutParams(130, LayoutParams.WRAP_CONTENT));
 				AsyncImageView asyncImageView = new AsyncImageView(
 						FriendsOrFollowsList.this);
 				TextView info = new TextView(FriendsOrFollowsList.this);
@@ -287,7 +287,7 @@ public class FriendsOrFollowsList extends Activity implements
 
 			}
 
-			holder.info.setPadding(0, 5, 10, 10);
+			holder.info.setPadding(10, 5, 10, 10);
 			holder.info.setText(info_text);
 			holder.info.setTextColor(Color.BLACK);
 
