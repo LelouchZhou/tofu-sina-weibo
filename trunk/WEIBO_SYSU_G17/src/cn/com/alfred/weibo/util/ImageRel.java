@@ -5,11 +5,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 
-import cn.com.alfred.weibo.R;
-
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import cn.com.alfred.weibo.R;
 
 public class ImageRel {
 
@@ -30,13 +33,13 @@ public class ImageRel {
 		return data;
 	}
 
-	public static boolean saveMyBitmap(String bitName, Bitmap mBitmap) {
-		File f = new File(bitName);
+	public static boolean saveMyBitmap(String filePath, Bitmap bitmap) {
+		File f = new File(filePath);
 		try {
 			f.createNewFile();
 			FileOutputStream fOut = null;
 			fOut = new FileOutputStream(f);
-			mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+			bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
 			fOut.flush();
 			fOut.close();
 		} catch (Exception e) {
@@ -86,4 +89,60 @@ public class ImageRel {
 		ImageRel.bitmaps_loading = bitmaps_loading;
 	}
 
+	/**
+	 * 将文字写在图片上
+	 * 
+	 * @param text
+	 * @return
+	 */
+	public static Bitmap createBitmapFromText(String text) {
+		String output = toSBC(text);
+
+		Bitmap bitmap;
+		int height;
+		int width;
+		if (output.length() > 19) {
+			width = 400;
+			height = 23 * (text.length() / 19 + (text.length() % 19 != 0 ? 1 : 0)) + 6;
+		} else {
+			width = 20 + output.length() * 20;
+			height = 30;
+		}
+		bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+		Canvas canvas = new Canvas(bitmap);
+		canvas.drawColor(Color.WHITE);
+		Paint p = new Paint();
+		p.setColor(Color.BLACK);
+		p.setTextSize(20);
+
+		for (int index = 0; index < output.length(); index += 19) {
+			canvas.drawText(output.substring(index, (index + 19) < output
+					.length() ? (index + 19) : output.length()), 10,
+					23 * (index / 19 + 1), p);
+		}
+
+		canvas.save(Canvas.ALL_SAVE_FLAG);
+		canvas.restore();
+
+		return bitmap;
+	}
+
+	/**
+	 * 半角变全角
+	 * 
+	 * @param input
+	 * @return
+	 */
+	public static String toSBC(String input) {
+		char[] c = input.toCharArray();
+		for (int i = 0; i < c.length; i++) {
+			if (c[i] == 32) {
+				c[i] = (char) 12288;
+				continue;
+			}
+			if (c[i] < 127 && c[i] > 32)
+				c[i] = (char) (c[i] + 65248);
+		}
+		return new String(c);
+	}
 }

@@ -86,7 +86,7 @@ public class InfoHelper {
 				+ File.separator + "emotion" + File.separator;
 		File file = new File(path);
 		if (!(file.exists())) {
-			file.mkdir();
+			file.mkdirs();
 		}
 		return path;
 	}

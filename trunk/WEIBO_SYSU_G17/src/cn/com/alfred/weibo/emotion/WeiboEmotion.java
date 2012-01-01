@@ -13,9 +13,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import android.content.Context;
 import android.os.Handler;
-import android.os.Message;
+import android.util.Log;
 import cn.com.alfred.weibo.OAuth.OAuthConstant;
 import cn.com.alfred.weibo.basicModel.Emotion;
 import cn.com.alfred.weibo.basicModel.Weibo;
@@ -49,6 +48,7 @@ public class WeiboEmotion {
 		Weibo weibo = OAuthConstant.getInstance().getWeibo();
 		try {
 			List<Emotion> list = weibo.getEmotions();
+			Log.d("list", "" + list.size());
 			for (Emotion tmp : list) {
 				if (emotions.containsKey(tmp.getPhrase()))
 					continue;

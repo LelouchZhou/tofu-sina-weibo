@@ -50,6 +50,7 @@ import android.widget.Toast;
 import cn.com.alfred.weibo.OAuth.OAuthConstant;
 import cn.com.alfred.weibo.basicModel.Weibo;
 import cn.com.alfred.weibo.http.AccessToken;
+import cn.com.alfred.weibo.util.ImageRel;
 import cn.com.alfred.weibo.util.InfoHelper;
 import cn.com.alfred.weibo.widget.HighLightTextView;
 
@@ -72,7 +73,7 @@ public class ShareActivity extends Activity {
 	private ImageView imageView;
 	private TextView wordCounterTextView;
 	private EditText contentEditText;
-	private ProgressDialog dialog;
+	private ProgressDialog progressDialog;
 	private GridView gridView;
 	private GridAdapter adapter;
 	private String uploadImage = null;
@@ -91,14 +92,14 @@ public class ShareActivity extends Activity {
 				case UPDATE_SUCCESS:
 					Toast.makeText(ShareActivity.this, "发微博成功",
 							Toast.LENGTH_LONG).show();
-					dialog.dismiss();
+					progressDialog.dismiss();
 					ShareActivity.this.finish();
 					break;
 
 				case UPDATE_FAILED:
 					Toast.makeText(ShareActivity.this, "发微博失败",
 							Toast.LENGTH_LONG).show();
-					dialog.dismiss();
+					progressDialog.dismiss();
 					break;
 
 			}
@@ -212,7 +213,7 @@ public class ShareActivity extends Activity {
 			public void onClick(View v) {
 
 				if (InfoHelper.checkNetWork(ShareActivity.this) && isChecked()) {
-					dialog.show();
+					progressDialog.show();
 					new Thread(updateWeibo).start();
 				}
 			}
@@ -284,9 +285,10 @@ public class ShareActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-				inputMethodManager.toggleSoftInput(0,
-						InputMethodManager.SHOW_FORCED);
+//				InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+//				inputMethodManager.toggleSoftInput(0,
+//						InputMethodManager.SHOW_FORCED);
+				gridView.setVisibility(View.GONE);
 				btn_emtions.setText("添加表情");
 				isInputMethodShow = true;
 				isGridViewShow = false;
@@ -316,10 +318,10 @@ public class ShareActivity extends Activity {
 			}
 		}
 
-		dialog = new ProgressDialog(ShareActivity.this);
-		dialog.setMessage("分享中...");
-		dialog.setIndeterminate(false);
-		dialog.setCancelable(true);
+		progressDialog = new ProgressDialog(ShareActivity.this);
+		progressDialog.setMessage("分享中...");
+		progressDialog.setIndeterminate(false);
+		progressDialog.setCancelable(true);
 	}
 
 	@Override
@@ -486,7 +488,7 @@ public class ShareActivity extends Activity {
 	}
 
 	/**
-	 * 检查微博是否合法
+	 * 检查字数是否合法
 	 * 
 	 * @return
 	 */
@@ -498,9 +500,40 @@ public class ShareActivity extends Activity {
 		} else if (contentEditText.getText().toString().length() > 140) {
 			int currentLength = contentEditText.getText().toString().length();
 
-			Toast.makeText(ShareActivity.this,
-					"已超出" + (currentLength - 140) + "字", Toast.LENGTH_SHORT)
-					.show();
+			if (TextUtils.isEmpty(uploadImage)) {
+				new AlertDialog.Builder(this)
+						.setMessage("微博内容过长，是否已纸微博形式分享？")
+						.setPositiveButton("确定",
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+										progressDialog.show();
+										Bitmap bitmap = ImageRel
+												.createBitmapFromText(contentEditText
+														.getText().toString());
+										uploadImage = InfoHelper.getWeiboPath()
+												+ InfoHelper.getFileName();
+										ImageRel.saveMyBitmap(uploadImage,
+												bitmap);
+										contentEditText.setText("#纸微博#");
+										new Thread(updateWeibo).start();
+									}
+								})
+						.setNegativeButton("返回",
+								new DialogInterface.OnClickListener() {
+
+									@Override
+									public void onClick(DialogInterface dialog,
+											int which) {
+									}
+								}).show();
+			} else {
+				Toast.makeText(ShareActivity.this,
+						"已超出" + (currentLength - 140) + "字", Toast.LENGTH_SHORT)
+						.show();
+			}
 			return false;
 		}
 		return true;
@@ -550,7 +583,7 @@ public class ShareActivity extends Activity {
 		if (TextUtils.isEmpty(textContent))
 			textContent = "";
 		int remainLength = 140 - textContent.length();
-		if (remainLength <= 140) {
+		if (remainLength >= 0) {
 			wordCounterTextView.setTextColor(Color.BLACK);
 		} else {
 			wordCounterTextView.setTextColor(Color.RED);
