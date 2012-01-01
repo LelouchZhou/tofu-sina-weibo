@@ -14,9 +14,9 @@
     <application
         android:configChanges="keyboardHidden|orientation"
         android:icon="@drawable/ic_launcher"
-        android:theme="@style/mytheme"
         android:label="@string/app_name"
-        android:screenOrientation="portrait" >
+        android:screenOrientation="portrait"
+        android:theme="@style/mytheme" >
         <activity
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/app_name"
@@ -66,14 +66,27 @@
             </intent-filter>
         </activity>
         <activity
-           android:configChanges="keyboard"
+            android:configChanges="keyboard"
             android:name=".ViewActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity android:name=".util.MyView" />
         <activity android:name=".FriendsOrFollowsList" />
         <activity android:name=".UserWeibo" />
-        <activity android:name=".UserInfo" />
+        <activity
+            android:name=".UserInfo" >
+            <intent-filter >
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="sina_profile"
+                    android:scheme="tofuweibo" >
+                </data>
+            </intent-filter>
+        </activity>
         <activity android:name=".widget.WebViewActivity" />
 
         <receiver android:name=".widget.WeiboAppWidget" >

@@ -1438,6 +1438,7 @@ public class Weibo extends WeiboSupport implements java.io.Serializable {
 	 *      </a>
 	 */
 	public List<Status> getMentions() throws WeiboException {
+		resetCount(2);
 		return Status.constructStatuses(get(getBaseURL()
 				+ "statuses/mentions.json", null, true));
 	}
@@ -1540,6 +1541,7 @@ public class Weibo extends WeiboSupport implements java.io.Serializable {
 	 *      href="http://open.t.sina.com.cn/wiki/index.php/Statuses/comments_to_me">Statuses/comments_to_me</a>
 	 */
 	public List<Comment> getCommentsToMe() throws WeiboException {
+		resetCount(1);
 		return Comment.constructComments(get(getBaseURL()
 				+ "statuses/comments_to_me.json", true));
 	}

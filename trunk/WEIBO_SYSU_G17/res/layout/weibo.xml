@@ -1,102 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#F0FFFF"
-    android:orientation="vertical" >
+	android:layout_width="fill_parent" android:layout_height="fill_parent"
+	android:background="#F0FFFF" android:orientation="vertical">
+	<FrameLayout android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:background="#F0FFFF"
+		android:orientation="vertical" android:id="@+id/weibo_ff"
+		android:visibility="gone">
+		<ScrollView android:layout_width="fill_parent"
+			android:layout_height="fill_parent">
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+			<LinearLayout android:layout_width="fill_parent"
+				android:layout_height="fill_parent" android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical" >
+				<LinearLayout android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:padding="10dip">
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dip" >
+					<cn.com.alfred.weibo.widget.AsyncImageView
+						android:id="@+id/weibo_avatar" android:layout_width="wrap_content"
+						android:layout_height="wrap_content" />
 
-                <cn.com.alfred.weibo.widget.AsyncImageView
-                    android:id="@+id/weibo_avatar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+					<TextView android:id="@+id/weibo_screenName"
+						android:layout_width="wrap_content" android:layout_height="wrap_content"
+						android:layout_gravity="center_vertical" android:paddingLeft="10dip"
+						android:textColor="#000000" />
+				</LinearLayout>
 
-                <TextView
-                    android:id="@+id/weibo_screenName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:paddingLeft="10dip"
-                    android:textColor="#000000" />
-            </LinearLayout>
+				<cn.com.alfred.weibo.widget.HighLightTextView
+					android:id="@+id/weibo_text" android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:padding="10dip"
+					android:textColor="#000000" android:autoLink="web|phone|email"/>
 
-            <cn.com.alfred.weibo.widget.HighLightTextView
-                android:id="@+id/weibo_text"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dip"
-                android:textColor="#000000" />
+				<cn.com.alfred.weibo.widget.AsyncImageView
+					android:id="@+id/weibo_pic" android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
+					android:paddingBottom="20dip" android:paddingTop="10dip"
+					android:visibility="gone" />
 
-            <cn.com.alfred.weibo.widget.AsyncImageView
-                android:id="@+id/weibo_pic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:paddingBottom="20dip"
-                android:paddingTop="10dip"
-                android:visibility="gone" />
+				<LinearLayout android:layout_width="fill_parent"
+					android:layout_height="wrap_content" android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+					<Button android:id="@+id/weibo_btn_retweet"
+						android:layout_width="fill_parent" android:layout_height="fill_parent"
+						android:layout_weight="1" android:text="转发" />
 
-                <Button
-                    android:id="@+id/weibo_btn_retweet"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:text="转发" />
+					<Button android:id="@+id/weibo_btn_comment"
+						android:layout_width="fill_parent" android:layout_height="fill_parent"
+						android:layout_weight="1" android:text="评论" />
+				</LinearLayout>
+			</LinearLayout>
+		</ScrollView>
 
-                <Button
-                    android:id="@+id/weibo_btn_comment"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:text="评论" />
-            </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
+		<SlidingDrawer android:id="@+id/slidingdrawer"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:content="@+id/slide_content" android:handle="@+id/slide_handle">
 
-    <SlidingDrawer
-        android:id="@+id/slidingdrawer"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:content="@+id/slide_content"
-        android:handle="@+id/slide_handle" >
+			<ImageButton android:id="@id/slide_handle"
+				android:layout_width="50dip" android:layout_height="44dip"
+				android:src="@drawable/goicon" />
 
-        <ImageButton
-            android:id="@id/slide_handle"
-            android:layout_width="50dip"
-            android:layout_height="44dip"
-            android:src="@drawable/goicon" />
+			<LinearLayout android:id="@id/slide_content"
+				android:layout_width="fill_parent" android:layout_height="fill_parent"
+				android:background="#ffffff" android:orientation="vertical">
+				<TextView android:id="@+id/weibo_no_comment"
+					android:layout_width="fill_parent" android:layout_height="wrap_content"
+					android:textColor="#000000" android:orientation="vertical"
+					android:padding="10dip" android:text="暂无评论" android:layout_weight="1" />
+				<ListView android:id="@+id/slide_listView"
+					android:layout_width="fill_parent" android:layout_height="fill_parent"
+					android:layout_weight="1">
+				</ListView>
+			</LinearLayout>
+		</SlidingDrawer>
+	</FrameLayout>
 
-        <LinearLayout
-            android:id="@id/slide_content"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:background="#ffffff"
-            android:orientation="vertical" >
+	<LinearLayout android:id="@+id/weibo_waitingView"
+		android:layout_width="fill_parent" android:layout_height="fill_parent"
+		android:orientation="horizontal" android:gravity="center">
 
-            <ListView
-                android:id="@+id/slide_listView"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent" >
-            </ListView>
-        </LinearLayout>
-    </SlidingDrawer>
+		<ProgressBar style="?android:attr/progressBarStyleSmallTitle"
+			android:layout_width="wrap_content" android:layout_height="wrap_content"
+			android:indeterminateDrawable="@drawable/progresscolor" />
+
+		<TextView android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:paddingLeft="10dip"
+			android:text="加载中..." android:textColor="#000000" />
+	</LinearLayout>
 
 </FrameLayout>
