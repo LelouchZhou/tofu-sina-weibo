@@ -240,6 +240,7 @@ public class WeiboAdapter extends BaseAdapter implements OnRefreshListener,
 								paging.setMaxId(((Status) curList.get(curList
 										.size() - 1)).getId());
 								curList.addAll(weibo.getMentions(paging));
+								break;
 								
 							case 3:
 								paging.setMaxId(((Status) curList.get(curList

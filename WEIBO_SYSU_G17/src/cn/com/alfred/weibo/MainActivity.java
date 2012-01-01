@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -22,7 +21,6 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
 import android.widget.TabHost;
-import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabContentFactory;
 import android.widget.TabHost.TabSpec;
 import android.widget.TabWidget;
@@ -58,6 +56,7 @@ public class MainActivity extends TabActivity implements TabContentFactory,
 	private List<WeiboResponse> friendsTimeline = new ArrayList<WeiboResponse>();
 	private AutoGetMoreListView autoGetMoreListView;
 	private int preIndex = 0;
+	private FrameLayout ff;
 
 	private WaitingView waitingView;
 	private Handler handler = new Handler() {
@@ -89,6 +88,7 @@ public class MainActivity extends TabActivity implements TabContentFactory,
 					Toast.makeText(MainActivity.this, "表情包下载或更新失败",
 							Toast.LENGTH_LONG).show();
 					break;
+
 			}
 		}
 	};
@@ -143,9 +143,11 @@ public class MainActivity extends TabActivity implements TabContentFactory,
 	}
 
 	private void initTab() {
-		setContentView(R.layout.tabactivity);
+//		setContentView(R.layout.tabactivity);
 		tabHost = this.getTabHost();
 		tabHost.setBackgroundResource(R.drawable.bg);
+//		ff = (FrameLayout) findViewById(android.R.id.tabcontent);
+		ff = new FrameLayout(this);
 
 		TabSpec ts1 = tabHost.newTabSpec("HOME").setIndicator("首页");
 		ts1.setContent(this);
@@ -157,20 +159,22 @@ public class MainActivity extends TabActivity implements TabContentFactory,
 
 		TabSpec ts3 = tabHost.newTabSpec("INFO").setIndicator("资料")
 				.setContent(new Intent(this, UserInfo.class));
+		// TabSpec ts3 = tabHost.newTabSpec("INFO").setIndicator("资料")
+		// .setContent(this);
 		tabHost.addTab(ts3);
 
-//		tabHost.setOnTabChangedListener(new OnTabChangeListener() {
-//
-//			@Override
-//			public void onTabChanged(String tabId) {
-//				if (tabId.equals("MSG")) {
-//					startActivityForResult(new Intent(MainActivity.this,
-//							InfoActivity.class), 1);
-//				} else {
-//					preIndex = tabHost.getCurrentTab();
-//				}
-//			}
-//		});
+		// tabHost.setOnTabChangedListener(new OnTabChangeListener() {
+		//
+		// @Override
+		// public void onTabChanged(String tabId) {
+		// if (tabId.equals("MSG")) {
+		// startActivityForResult(new Intent(MainActivity.this,
+		// InfoActivity.class), 1);
+		// } else {
+		// preIndex = tabHost.getCurrentTab();
+		// }
+		// }
+		// });
 		changeTabStyle();
 	}
 
@@ -250,7 +254,6 @@ public class MainActivity extends TabActivity implements TabContentFactory,
 
 	@Override
 	public View createTabContent(String tag) {
-		FrameLayout ff = (FrameLayout) findViewById(android.R.id.tabcontent);
 		if (tag.equals("HOME")) {
 			ff.addView(waitingView);
 			ff.addView(autoGetMoreListView);

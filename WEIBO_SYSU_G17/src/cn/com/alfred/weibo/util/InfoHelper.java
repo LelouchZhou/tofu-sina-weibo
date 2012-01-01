@@ -30,6 +30,9 @@ public class InfoHelper {
 	public static final int LOADING_DATA_FAILED = 0;
 	public static final int LOADING_DATA_COMPLETED = 1;
 	public static final int LOADING_DATA_BEGIN = 2;
+	
+	public static final int LOADING_INFO_DATA_FAILED = 3;
+	public static final int LOADING_INFO_DATA_COMPLETED = 4;
 
 	public static final String TAG = "tofuTAG";
 
