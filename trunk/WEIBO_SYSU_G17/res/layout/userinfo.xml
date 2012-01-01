@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent" android:layout_height="fill_parent"
-	android:orientation="vertical" android:textColor="#ddeeeeee">
+	android:orientation="vertical"  android:background="@drawable/bg">
 
 	<TextView android:id="@+id/userinfo_failed"
 		android:layout_width="fill_parent" android:layout_height="wrap_content"
@@ -21,7 +21,7 @@
 
 			<TextView android:id="@+id/userinfo_tv_name"
 				android:layout_width="wrap_content" android:layout_height="wrap_content"
-				android:paddingLeft="10dip" android:text="昵称" />
+				android:paddingLeft="10dip" android:text="昵称" android:textColor="#424952"/>
 		</LinearLayout>
 
 		<TextView android:id="@+id/userinfo_tv_location"

@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
@@ -55,6 +56,8 @@ public class InfoActivity extends TabActivity implements TabContentFactory,
 	private boolean[] isCompleted = new boolean[3];
 	private boolean[] isRunning = new boolean[3];
 	private boolean isFirst;
+	private int preIndex;
+	private int[] preListIndex = new int[3];
 	private WaitingView waitingView;
 	private Runnable[] runnables = new Runnable[3];
 	private static String[] texts = new String[] { "“我收到的评论”", "“我发出的评论”",
@@ -107,6 +110,8 @@ public class InfoActivity extends TabActivity implements TabContentFactory,
 
 		Arrays.fill(isCompleted, false);
 		Arrays.fill(isRunning, false);
+		Arrays.fill(preListIndex, 1);
+
 		System.setProperty("weibo4j.oauth.consumerKey", Weibo.CONSUMER_KEY);
 		System.setProperty("weibo4j.oauth.consumerSecret",
 				Weibo.CONSUMER_SECRET);
@@ -140,6 +145,7 @@ public class InfoActivity extends TabActivity implements TabContentFactory,
 			else if (type == 2)
 				notificationManager.cancel(MainActivity.UNREAD_MENTION);
 		}
+		preIndex = type;
 		tabHost.setCurrentTab(type);
 		switch (type) {
 			case 0:
@@ -446,6 +452,54 @@ public class InfoActivity extends TabActivity implements TabContentFactory,
 		for (int i = 0; i < 3; i++) {
 			View view = widget.getChildAt(i);
 			view.setBackgroundResource(R.drawable.widget_btn);
+			final int index = i;
+			view.setOnClickListener(new OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					if (tabHost.getCurrentTab() == index) {
+						autoGetMoreListView.setSelection(1);
+						preListIndex[index] = 1;
+
+					} else {
+
+						preListIndex[preIndex] = autoGetMoreListView
+								.getFirstVisiblePosition();
+						tabHost.setCurrentTab(index);
+
+						if (isCompleted[index]) {
+							waitingView.setVisibility(View.GONE);
+							autoGetMoreListView.setVisibility(View.VISIBLE);
+						} else {
+							waitingView.setVisibility(View.VISIBLE);
+							autoGetMoreListView.setVisibility(View.GONE);
+						}
+
+						switch (index) {
+							case 0:
+								infoAdapter.setCurList(commentToMe);
+								break;
+							case 1:
+								infoAdapter.setCurList(commentByMe);
+								break;
+							case 2:
+								infoAdapter.setCurList(mentions);
+								break;
+						}
+						infoAdapter.setType(index);
+						infoAdapter.notifyDataSetChanged();
+
+						if (preListIndex[index] < infoAdapter.getCount() + 2)
+							autoGetMoreListView
+									.setSelection(preListIndex[index]);
+					}
+					Log.d("preIndex: " + preIndex, "index: " + index);
+					preIndex = index;
+					for (int i = 0; i < 3; i++) {
+						Log.d("preListIndex " + i, preListIndex[i] + "");
+					}
+				}
+			});
 		}
 	}
 }
