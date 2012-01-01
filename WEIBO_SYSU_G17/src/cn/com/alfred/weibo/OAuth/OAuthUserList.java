@@ -288,7 +288,7 @@ public class OAuthUserList extends Activity {
 
 				TextView tv = new TextView(context);
 				tv.setText(users.get(position).getScreenName());
-				tv.setTextSize(40);
+				tv.setTextSize(20);
 				tv.setTextColor(Color.BLACK);
 				tv.setLayoutParams(new LayoutParams(
 						LinearLayout.LayoutParams.FILL_PARENT,

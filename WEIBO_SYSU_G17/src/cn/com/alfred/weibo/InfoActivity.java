@@ -324,8 +324,7 @@ public class InfoActivity extends TabActivity implements TabContentFactory,
 												"cid",
 												((Comment) commentToMe
 														.get(position - 1))
-														.getStatus().getUser()
-														.getId()
+														.getUser().getId()
 														+ "");
 
 										break;
@@ -338,8 +337,7 @@ public class InfoActivity extends TabActivity implements TabContentFactory,
 												"cid",
 												((Comment) commentByMe
 														.get(position - 1))
-														.getStatus().getUser()
-														.getId()
+														.getUser().getId()
 														+ "");
 
 										break;

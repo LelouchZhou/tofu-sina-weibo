@@ -183,7 +183,6 @@ public class MyView extends Activity implements OnMenuItemClickListener {
 			}
 		});
 
-		zc.setIsZoomOutEnabled(false);
 		zc.setOnZoomInClickListener(new OnClickListener() {
 
 			@Override
@@ -192,7 +191,7 @@ public class MyView extends Activity implements OnMenuItemClickListener {
 					getSize();
 				}
 				imageView.setScale((imageView.getRight() - imageView.getLeft()) / 8);
-				enableZC();
+//				enableZC();
 			}
 		});
 		zc.setOnZoomOutClickListener(new OnClickListener() {
@@ -203,10 +202,12 @@ public class MyView extends Activity implements OnMenuItemClickListener {
 					getSize();
 				}
 				imageView.setScale((imageView.getLeft() - imageView.getRight()) / 8);
-				enableZC();
+//				enableZC();
 			}
 		});
-
+		zc.setIsZoomInEnabled(true);
+		zc.setIsZoomOutEnabled(true);
+		
 		// 设置图片填充ImageView
 		imageView.setScaleType(ScaleType.FIT_CENTER);
 		point_first = true;
@@ -273,7 +274,7 @@ public class MyView extends Activity implements OnMenuItemClickListener {
 				imageView.moveWithFinger(event);
 			}
 		}
-		enableZC();
+//		enableZC();
 		imageView.invalidate();
 		return true;
 	}
@@ -333,26 +334,26 @@ public class MyView extends Activity implements OnMenuItemClickListener {
 		}
 	}
 
-	private void enableZC() {
-		int temp = (imageView.getRight() - imageView.getLeft()) / 5;
-		int left = imageView.getLeft() - temp;
-		int right = imageView.getRight() + temp;
-		int top = imageView.getTop() - temp;
-		int bottom = imageView.getBottom() + temp;
-		zc.setIsZoomInEnabled(true);
-		zc.setIsZoomOutEnabled(true);
-		// if (right - left > imageView.getBitmap().getWidth() * 5
-		// || bottom - top > imageView.getBitmap().getHeight() * 5)
-		// zc.setIsZoomInEnabled(false);
-
-		temp = 0;
-		left = imageView.getLeft() - temp;
-		right = imageView.getRight() + temp;
-		top = imageView.getTop() - temp;
-		bottom = imageView.getBottom() + temp;
-		if (right - left < MyView.bitmap_width / 5
-				|| bottom - top < MyView.bitmap_height / 5)
-			zc.setIsZoomOutEnabled(false);
-	}
+//	private void enableZC() {
+//		int temp = (imageView.getRight() - imageView.getLeft()) / 8;
+//		int left = imageView.getLeft() - temp;
+//		int right = imageView.getRight() + temp;
+//		int top = imageView.getTop() - temp;
+//		int bottom = imageView.getBottom() + temp;
+//		zc.setIsZoomInEnabled(true);
+//		zc.setIsZoomOutEnabled(true);
+//		// if (right - left > imageView.getBitmap().getWidth() * 5
+//		// || bottom - top > imageView.getBitmap().getHeight() * 5)
+//		// zc.setIsZoomInEnabled(false);
+//
+//		temp = 0;
+//		left = imageView.getLeft() - temp;
+//		right = imageView.getRight() + temp;
+//		top = imageView.getTop() - temp;
+//		bottom = imageView.getBottom() + temp;
+////		if (right - left < MyView.bitmap_width / 5
+////				|| bottom - top < MyView.bitmap_height / 5)
+////			zc.setIsZoomOutEnabled(false);
+//	}
 
 }

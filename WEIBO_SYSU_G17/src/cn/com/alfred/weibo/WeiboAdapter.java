@@ -5,9 +5,11 @@ import java.util.List;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -48,14 +50,14 @@ public class WeiboAdapter extends BaseAdapter implements OnRefreshListener,
 	private String cid; // 代表当前查看的是指定人的微博
 
 	static class ViewHolder {
+
 		AsyncImageView wbicon;
 		HighLightTextView wbtext;
 		TextView wbtime;
 		TextView wbuser;
 		ImageView wbimage;
 	}
-	
-	
+
 	public WeiboAdapter(List<WeiboResponse> curList, Context context, int type,
 			AutoGetMoreListView autoGetMoreListView) {
 		this.curList = curList;
@@ -89,16 +91,18 @@ public class WeiboAdapter extends BaseAdapter implements OnRefreshListener,
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
-		if(convertView == null) {
-			convertView = LayoutInflater.from(context).inflate(R.layout.timeline,
-					null);
+		if (convertView == null) {
+			convertView = LayoutInflater.from(context).inflate(
+					R.layout.timeline, null);
 			AsyncImageView wbicon = (AsyncImageView) convertView
 					.findViewById(R.id.wbicon);
-			HighLightTextView wbtext = (HighLightTextView) convertView.findViewById(R.id.wbtext);
+			HighLightTextView wbtext = (HighLightTextView) convertView
+					.findViewById(R.id.wbtext);
 			TextView wbtime = (TextView) convertView.findViewById(R.id.wbtime);
 			TextView wbuser = (TextView) convertView.findViewById(R.id.wbuser);
-			ImageView wbimage = (ImageView) convertView.findViewById(R.id.wbimage);
-			
+			ImageView wbimage = (ImageView) convertView
+					.findViewById(R.id.wbimage);
+
 			holder = new ViewHolder();
 			holder.wbicon = wbicon;
 			holder.wbimage = wbimage;
@@ -106,18 +110,20 @@ public class WeiboAdapter extends BaseAdapter implements OnRefreshListener,
 			holder.wbtime = wbtime;
 			holder.wbuser = wbuser;
 			convertView.setTag(holder);
-		}else {
+		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
-		
+
 		holder.wbimage.setVisibility(View.GONE);
 		holder.wbicon.setProgressBitmaps(ImageRel.getBitmaps_avatar(context));
+
 		String screenName = "";
+		String userID = "";
 		switch (type) {
 			case 0:
 			case 1:
 				Comment comment = (Comment) curList.get(position);
-
+				userID = comment.getUser().getId() + "";
 				String commentText = comment.getText();
 				if (comment.getReply_comment() != null) {
 					commentText = commentText
@@ -167,7 +173,8 @@ public class WeiboAdapter extends BaseAdapter implements OnRefreshListener,
 				}
 
 				holder.wbtext.setText(commentText);
-				holder.wbicon.setUrl(comment.getUser().getProfileImageURL().toString());
+				holder.wbicon.setUrl(comment.getUser().getProfileImageURL()
+						.toString());
 				holder.wbtime.setText(sdf.format(comment.getCreatedAt()));
 				screenName = comment.getUser().getScreenName();
 				break;
@@ -175,8 +182,9 @@ public class WeiboAdapter extends BaseAdapter implements OnRefreshListener,
 			case 2:
 			case 3:
 				Status status = (Status) curList.get(position);
-
-				holder.wbicon.setUrl(status.getUser().getProfileImageURL().toString());
+				userID = status.getUser().getId() + "";
+				holder.wbicon.setUrl(status.getUser().getProfileImageURL()
+						.toString());
 
 				String text = status.getText();
 				if (status.getRetweeted_status() != null)
@@ -197,6 +205,17 @@ public class WeiboAdapter extends BaseAdapter implements OnRefreshListener,
 					holder.wbimage.setVisibility(View.VISIBLE);
 				break;
 		}
+
+		final String cid = userID;
+		holder.wbicon.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(context, UserInfo.class);
+				intent.putExtra("cid", cid);
+				context.startActivity(intent);
+			}
+		});
 
 		if (screenName.length() > 6) {
 			screenName = screenName.substring(0, 6) + "...";
@@ -229,19 +248,19 @@ public class WeiboAdapter extends BaseAdapter implements OnRefreshListener,
 										.size() - 1)).getId());
 								curList.addAll(weibo.getCommentsToMe(paging));
 								break;
-								
+
 							case 1:
 								paging.setMaxId(((Comment) curList.get(curList
 										.size() - 1)).getId());
 								curList.addAll(weibo.getCommentsByMe(paging));
 								break;
-								
+
 							case 2:
 								paging.setMaxId(((Status) curList.get(curList
 										.size() - 1)).getId());
 								curList.addAll(weibo.getMentions(paging));
 								break;
-								
+
 							case 3:
 								paging.setMaxId(((Status) curList.get(curList
 										.size() - 1)).getId());
@@ -282,14 +301,14 @@ public class WeiboAdapter extends BaseAdapter implements OnRefreshListener,
 									.cancel(MainActivity.UNREAD_COMMENT);
 							weibo.resetCount(1);
 							break;
-							
+
 						case 1:
 							List<Comment> newCommentByMe = weibo
 									.getCommentsByMe();
 							curList.clear();
 							curList.addAll(newCommentByMe);
 							break;
-							
+
 						case 2:
 							List<Status> newMentions = weibo.getMentions();
 							curList.clear();
