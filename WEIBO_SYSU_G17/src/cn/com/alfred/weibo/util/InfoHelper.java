@@ -27,6 +27,10 @@ import android.widget.Toast;
  */
 public class InfoHelper {
 
+	
+	public static final String MENTIONS_SCHEMA = "tofuweibo://sina_profile";
+	public static final String TRENDS_SCHEMA = "tofuweibo://sina_profile1";
+	
 	public static final int LOADING_DATA_FAILED = 0;
 	public static final int LOADING_DATA_COMPLETED = 1;
 	public static final int LOADING_DATA_BEGIN = 2;

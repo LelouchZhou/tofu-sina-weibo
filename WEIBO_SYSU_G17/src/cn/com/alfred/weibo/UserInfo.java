@@ -2,6 +2,7 @@ package cn.com.alfred.weibo;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -20,9 +21,13 @@ import cn.com.alfred.weibo.basicModel.WeiboException;
 import cn.com.alfred.weibo.util.ImageRel;
 import cn.com.alfred.weibo.util.InfoHelper;
 import cn.com.alfred.weibo.widget.AsyncImageView;
+import cn.com.alfred.weibo.widget.HighLightTextView;
 
 public class UserInfo extends Activity implements OnClickListener {
 
+	
+	private static final Uri PROFILE_URI = Uri.parse(HighLightTextView.MENTIONS_SCHEMA);
+	
 	private TextView tv_failed;
 	private TextView tv_name;
 	private TextView tv_url;
@@ -84,8 +89,12 @@ public class UserInfo extends Activity implements OnClickListener {
 
 		cid = null;
 		Bundle bundle = getIntent().getExtras();
+		Uri uri = getIntent().getData();
 		if (bundle != null)
 			cid = bundle.getString("cid");
+		if(uri != null && PROFILE_URI.getScheme().equals(uri.getScheme())) {
+			cid = uri.getQueryParameter(HighLightTextView.PARAM_UID);
+		}
 		if (TextUtils.isEmpty(cid))
 			cid = OAuthConstant.getInstance().getAccessToken().getUserId() + "";
 		userinfo_pic = (AsyncImageView) findViewById(R.id.userinfo_pic);

@@ -1,65 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:textColor="#ddeeeeee"
-    android:orientation="horizontal" >
+	android:layout_width="wrap_content" android:layout_height="wrap_content"
+	android:textColor="#ddeeeeee" android:orientation="horizontal">
 
-    <cn.com.alfred.weibo.widget.AsyncImageView
-        android:id="@+id/wbicon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8px">
-    </cn.com.alfred.weibo.widget.AsyncImageView>
+	<cn.com.alfred.weibo.widget.AsyncImageView
+		android:id="@+id/wbicon" android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_margin="8px">
+	</cn.com.alfred.weibo.widget.AsyncImageView>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="5px"
-        android:layout_marginTop="5px"
-        android:orientation="vertical"
-        android:paddingLeft="0px"
-        android:paddingRight="5px" >
+	<LinearLayout android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:layout_marginBottom="5px"
+		android:layout_marginTop="5px" android:orientation="vertical"
+		android:paddingLeft="0px" android:paddingRight="5px">
 
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" >
+		<RelativeLayout android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/wbuser"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:textColor="#424952"
-                android:textSize="17sp" >
-            </TextView>
+			<TextView android:id="@+id/wbuser" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:layout_alignParentLeft="true"
+				android:textColor="#424952" android:textSize="17sp">
+			</TextView>
 
-            <ImageView
-                android:id="@+id/wbimage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="5px"
-                android:layout_marginTop="3px"
-                android:layout_toLeftOf="@+id/wbtime"
-                android:visibility="gone"
-                android:src="@drawable/image">
-            </ImageView>
+			<ImageView android:id="@+id/wbimage" android:layout_width="wrap_content"
+				android:layout_height="wrap_content" android:layout_marginRight="5px"
+				android:layout_marginTop="3px" android:layout_toLeftOf="@+id/wbtime"
+				android:visibility="gone" android:src="@drawable/image">
+			</ImageView>
 
-            <TextView
-                android:id="@+id/wbtime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:textColor="#f7a200"
-                android:textSize="14sp" >
-            </TextView>
-        </RelativeLayout>
+			<TextView android:id="@+id/wbtime" android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_alignParentRight="true" android:textColor="#f7a200"
+				android:textSize="14sp">
+			</TextView>
+		</RelativeLayout>
 
-        <cn.com.alfred.weibo.widget.HighLightTextView
-	android:id="@+id/wbtext" android:layout_width="wrap_content"
-	android:layout_height="wrap_content" android:layout_marginTop="4px"
-	android:textColor="#424952" android:textSize="14sp">
-        </cn.com.alfred.weibo.widget.HighLightTextView>
-    </LinearLayout>
+		<cn.com.alfred.weibo.widget.HighLightTextView
+			android:id="@+id/wbtext" android:layout_width="wrap_content"
+			android:layout_height="wrap_content" android:layout_marginTop="4px"
+			android:textColor="#424952" android:textSize="14sp" android:autoLink="web|phone|email">
+		</cn.com.alfred.weibo.widget.HighLightTextView>
+	</LinearLayout>
 
 </LinearLayout>
