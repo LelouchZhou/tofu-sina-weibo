@@ -2,7 +2,7 @@
 <resources>
 
     <string name="hello">Hello World, WEIBO_SYSU_G17Activity!</string>
-    <string name="app_name">WEIBO_SYSU_G17</string>
+    <string name="app_name">豆博</string>
     <string name="pull_to_refresh_pull_label">下拉刷新</string>
     <string name="pull_to_refresh_release_label">松开后刷新</string>
     <string name="pull_to_refresh_refreshing_label">刷新...</string>
